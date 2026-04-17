@@ -1,0 +1,204 @@
+{
+  "projects": [
+    {
+      "id": "proj_founder-story",
+      "name": "Founder Story Sprint",
+      "status": "processing",
+      "privacy": "unlisted",
+      "chunkDuration": 45,
+      "sceneDetection": true,
+      "sourceVideoKey": "uploads/founder-story-april.mp4",
+      "sourceVideoUrl": "/demo/short-placeholder.mp4",
+      "createdAt": "2026-04-16T09:15:00.000Z",
+      "updatedAt": "2026-04-17T08:45:00.000Z",
+      "uploadProgress": 74,
+      "processingStage": "Burning subtitles on chunk 03 of 04",
+      "queueDepth": 2,
+      "channelName": "Sarthak Clips",
+      "scheduleMode": "interval",
+      "dailyIntervalHours": 18,
+      "descriptionTemplate": "Short-form cut from the founder story series. Built for owned distribution only.",
+      "chunks": [
+        {
+          "id": "chunk_founder_01",
+          "projectId": "proj_founder-story",
+          "order": 1,
+          "title": "He Quit a Safe Job to Build This",
+          "description": "From the founder story campaign. Honest build-in-public moment about leaving predictability behind.",
+          "tags": ["startup", "founder", "buildinpublic"],
+          "status": "approved",
+          "durationSeconds": 38,
+          "sourceRange": { "startSeconds": 0, "endSeconds": 38 },
+          "trimRange": { "startSeconds": 1, "endSeconds": 38 },
+          "reframe": { "zoom": 1.14, "blur": 26 },
+          "videoUrl": "/demo/short-placeholder.mp4",
+          "thumbnailUrl": "/demo/thumb-01.jpg",
+          "r2VideoUrl": "https://demo-r2.example.com/projects/proj_founder-story/chunk_founder_01.mp4",
+          "r2ThumbnailUrl": "https://demo-r2.example.com/projects/proj_founder-story/chunk_founder_01.jpg",
+          "scheduledFor": "2026-04-18T12:00:00.000Z",
+          "uploadedAt": null,
+          "youtubeVideoId": null,
+          "uploadAttempts": 0,
+          "duplicateCheck": { "status": "clear", "matchedTitle": null },
+          "lastError": null,
+          "subtitleCues": [
+            { "id": "cue_101", "startSeconds": 1.2, "endSeconds": 5.8, "text": "I left a stable job because I wanted to own the upside." },
+            { "id": "cue_102", "startSeconds": 6.2, "endSeconds": 10.6, "text": "The first three months were mostly fear and spreadsheets." },
+            { "id": "cue_103", "startSeconds": 11.0, "endSeconds": 17.8, "text": "Then the product clicked when customers started repeating our language back to us." }
+          ]
+        },
+        {
+          "id": "chunk_founder_02",
+          "projectId": "proj_founder-story",
+          "order": 2,
+          "title": "The First Customer Call Changed Everything",
+          "description": "A sharper cut focused on early validation and what the team heard on customer calls.",
+          "tags": ["customerresearch", "product", "shorts"],
+          "status": "pending",
+          "durationSeconds": 42,
+          "sourceRange": { "startSeconds": 38, "endSeconds": 80 },
+          "trimRange": { "startSeconds": 39, "endSeconds": 79 },
+          "reframe": { "zoom": 1.18, "blur": 31 },
+          "videoUrl": "/demo/short-placeholder.mp4",
+          "thumbnailUrl": "/demo/thumb-02.jpg",
+          "r2VideoUrl": "https://demo-r2.example.com/projects/proj_founder-story/chunk_founder_02.mp4",
+          "r2ThumbnailUrl": "https://demo-r2.example.com/projects/proj_founder-story/chunk_founder_02.jpg",
+          "scheduledFor": "2026-04-19T12:00:00.000Z",
+          "uploadedAt": null,
+          "youtubeVideoId": null,
+          "uploadAttempts": 0,
+          "duplicateCheck": { "status": "checking", "matchedTitle": null },
+          "lastError": null,
+          "subtitleCues": [
+            { "id": "cue_201", "startSeconds": 39.5, "endSeconds": 45.0, "text": "Our first customer did not want more features." },
+            { "id": "cue_202", "startSeconds": 45.2, "endSeconds": 51.1, "text": "They wanted us to remove friction from one painful step." },
+            { "id": "cue_203", "startSeconds": 51.4, "endSeconds": 57.8, "text": "That single sentence basically rewrote the roadmap." }
+          ]
+        },
+        {
+          "id": "chunk_founder_03",
+          "projectId": "proj_founder-story",
+          "order": 3,
+          "title": "Why We Kept the Team Tiny on Purpose",
+          "description": "Explains the operating model: ship weekly, keep the team tiny, keep decision loops fast.",
+          "tags": ["startupops", "team", "execution"],
+          "status": "uploaded",
+          "durationSeconds": 35,
+          "sourceRange": { "startSeconds": 80, "endSeconds": 115 },
+          "trimRange": { "startSeconds": 82, "endSeconds": 115 },
+          "reframe": { "zoom": 1.1, "blur": 21 },
+          "videoUrl": "/demo/short-placeholder.mp4",
+          "thumbnailUrl": "/demo/thumb-03.jpg",
+          "r2VideoUrl": "https://demo-r2.example.com/projects/proj_founder-story/chunk_founder_03.mp4",
+          "r2ThumbnailUrl": "https://demo-r2.example.com/projects/proj_founder-story/chunk_founder_03.jpg",
+          "scheduledFor": "2026-04-17T12:00:00.000Z",
+          "uploadedAt": "2026-04-17T12:05:00.000Z",
+          "youtubeVideoId": "yt_demo_01",
+          "uploadAttempts": 1,
+          "duplicateCheck": { "status": "clear", "matchedTitle": null },
+          "lastError": null,
+          "subtitleCues": [
+            { "id": "cue_301", "startSeconds": 82.0, "endSeconds": 87.2, "text": "A small team means nobody can hide behind process." },
+            { "id": "cue_302", "startSeconds": 87.5, "endSeconds": 93.1, "text": "It also means every meeting must earn its existence." },
+            { "id": "cue_303", "startSeconds": 93.4, "endSeconds": 99.0, "text": "We optimized for short feedback loops instead of headcount optics." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proj_feature-demo",
+      "name": "Feature Launch Deep Dive",
+      "status": "ready",
+      "privacy": "private",
+      "chunkDuration": 30,
+      "sceneDetection": false,
+      "sourceVideoKey": "uploads/feature-launch-demo.mp4",
+      "sourceVideoUrl": "/demo/short-placeholder.mp4",
+      "createdAt": "2026-04-15T11:10:00.000Z",
+      "updatedAt": "2026-04-17T07:10:00.000Z",
+      "uploadProgress": 100,
+      "processingStage": "All chunks processed",
+      "queueDepth": 0,
+      "channelName": "Sarthak Clips",
+      "scheduleMode": "manual",
+      "dailyIntervalHours": null,
+      "descriptionTemplate": "Launch week clips extracted from the feature walkthrough.",
+      "chunks": [
+        {
+          "id": "chunk_feature_01",
+          "projectId": "proj_feature-demo",
+          "order": 1,
+          "title": "The Shortcut That Saves 15 Minutes Every Day",
+          "description": "Fast feature punchline with a clear before/after setup and direct CTA.",
+          "tags": ["productivity", "saas", "workflow"],
+          "status": "approved",
+          "durationSeconds": 28,
+          "sourceRange": { "startSeconds": 0, "endSeconds": 28 },
+          "trimRange": { "startSeconds": 0, "endSeconds": 28 },
+          "reframe": { "zoom": 1.2, "blur": 24 },
+          "videoUrl": "/demo/short-placeholder.mp4",
+          "thumbnailUrl": "/demo/thumb-01.jpg",
+          "r2VideoUrl": "https://demo-r2.example.com/projects/proj_feature-demo/chunk_feature_01.mp4",
+          "r2ThumbnailUrl": "https://demo-r2.example.com/projects/proj_feature-demo/chunk_feature_01.jpg",
+          "scheduledFor": "2026-04-18T10:00:00.000Z",
+          "uploadedAt": null,
+          "youtubeVideoId": null,
+          "uploadAttempts": 0,
+          "duplicateCheck": { "status": "duplicate", "matchedTitle": "The Shortcut That Saves 15 Minutes" },
+          "lastError": null,
+          "subtitleCues": [
+            { "id": "cue_401", "startSeconds": 0.0, "endSeconds": 4.2, "text": "This shortcut removes the slowest step in the workflow." },
+            { "id": "cue_402", "startSeconds": 4.5, "endSeconds": 9.8, "text": "You save the time every single day, not just once." }
+          ]
+        },
+        {
+          "id": "chunk_feature_02",
+          "projectId": "proj_feature-demo",
+          "order": 2,
+          "title": "One Screen, No Context Switching",
+          "description": "Explains how the new UI removes three separate tabs from the daily routine.",
+          "tags": ["ux", "saas", "productlaunch"],
+          "status": "skipped",
+          "durationSeconds": 31,
+          "sourceRange": { "startSeconds": 28, "endSeconds": 59 },
+          "trimRange": { "startSeconds": 29, "endSeconds": 58 },
+          "reframe": { "zoom": 1.12, "blur": 19 },
+          "videoUrl": "/demo/short-placeholder.mp4",
+          "thumbnailUrl": "/demo/thumb-02.jpg",
+          "r2VideoUrl": "https://demo-r2.example.com/projects/proj_feature-demo/chunk_feature_02.mp4",
+          "r2ThumbnailUrl": "https://demo-r2.example.com/projects/proj_feature-demo/chunk_feature_02.jpg",
+          "scheduledFor": null,
+          "uploadedAt": null,
+          "youtubeVideoId": null,
+          "uploadAttempts": 0,
+          "duplicateCheck": { "status": "clear", "matchedTitle": null },
+          "lastError": "Hook feels weak in the first three seconds.",
+          "subtitleCues": [
+            { "id": "cue_501", "startSeconds": 29.0, "endSeconds": 34.2, "text": "The real upgrade is not the design polish." },
+            { "id": "cue_502", "startSeconds": 34.5, "endSeconds": 40.8, "text": "It is the fact that you stay in one screen from start to finish." }
+          ]
+        }
+      ]
+    }
+  ],
+  "activity": [
+    {
+      "id": "evt_01",
+      "timestamp": "2026-04-17T08:43:00.000Z",
+      "label": "Chunk 02 subtitle burn queued",
+      "kind": "processing"
+    },
+    {
+      "id": "evt_02",
+      "timestamp": "2026-04-17T07:58:00.000Z",
+      "label": "YouTube duplicate guard flagged one matching title",
+      "kind": "upload"
+    },
+    {
+      "id": "evt_03",
+      "timestamp": "2026-04-17T07:22:00.000Z",
+      "label": "Presigned R2 upload completed in 4m 18s",
+      "kind": "storage"
+    }
+  ]
+}

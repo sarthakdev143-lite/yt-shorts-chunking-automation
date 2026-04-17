@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+:root {
+  --background: #071018;
+  --surface: rgba(7, 16, 24, 0.88);
+  --surface-elevated: rgba(11, 18, 28, 0.94);
+  --foreground: #edf6f3;
+  --muted-foreground: #9eb3b7;
+  --line: rgba(255, 255, 255, 0.08);
+  --accent: #44bea3;
+  --accent-strong: #6ed4bc;
+  --accent-foreground: #04110d;
+  --warm: #f2a848;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-heading);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(68, 190, 163, 0.16), transparent 28%),
+    radial-gradient(circle at 85% 15%, rgba(242, 168, 72, 0.14), transparent 20%),
+    linear-gradient(180deg, #071018 0%, #050a10 100%);
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--foreground);
+  font-family: var(--font-heading), sans-serif;
+  background: transparent;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  opacity: 0.25;
+}
+
+::selection {
+  background: rgba(68, 190, 163, 0.35);
+  color: var(--foreground);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
+}
