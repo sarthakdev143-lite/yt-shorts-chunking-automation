@@ -23,7 +23,7 @@ export function SidebarNav() {
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[color:var(--accent)]">Shortsmith</p>
           <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">YouTube Shorts pipeline</h1>
           <p className="text-sm leading-6 text-[color:var(--muted-foreground)]">
-            Upload once, process serially, review precisely, and clear temporary R2 assets immediately after publishing.
+            Upload once, process serially, review precisely, and clear temporary Drive assets immediately after publishing.
           </p>
         </div>
 

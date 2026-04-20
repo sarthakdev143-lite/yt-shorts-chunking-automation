@@ -102,7 +102,7 @@ export function SchedulerBoard({ project }: { project: Project }) {
       uploadAttempts: chunk.uploadAttempts + 1,
     }));
 
-    setQueueState(`Uploaded ${nextChunk.title} and marked the processed asset for R2 cleanup.`);
+    setQueueState(`Uploaded ${nextChunk.title} and marked the processed asset for Drive cleanup.`);
   }
 
   return (

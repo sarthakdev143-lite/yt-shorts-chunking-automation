@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 const pillars = [
   {
     icon: CloudUpload,
-    title: "Direct R2 upload path",
-    body: "Source files bypass the backend entirely through presigned uploads, keeping Render memory usage stable.",
+    title: "Google Drive transit storage",
+    body: "Source files land in Google Drive before processing, keeping the pipeline simpler to operate locally.",
   },
   {
     icon: Sparkles,
@@ -66,7 +66,7 @@ export default async function HomePage() {
               </h2>
               <p className="max-w-2xl text-lg leading-8 text-[color:var(--muted-foreground)]">
                 Next.js drives the operator UI, FastAPI and Celery process the footage, Groq handles transcription,
-                and R2 acts as a temporary transit layer so the workflow stays within free-tier constraints.
+                and Google Drive acts as a temporary transit layer so the workflow stays operational without dedicated object storage.
               </p>
             </div>
 

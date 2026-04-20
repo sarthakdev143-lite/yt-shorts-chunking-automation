@@ -43,7 +43,7 @@ def health() -> dict:
         "backendUrl": None,
         "services": [
             {"name": "Render API", "status": "demo" if settings.demo_mode else "ready", "detail": "FastAPI server is responding."},
-            {"name": "Cloudflare R2", "status": "ready" if settings.r2_ready else "demo", "detail": "Temporary transit bucket is configured." if settings.r2_ready else "R2 env vars are missing."},
+            {"name": "Google Drive", "status": "ready" if settings.google_drive_ready else "demo", "detail": "Drive folder-backed transient storage is configured." if settings.google_drive_ready else "Drive service-account env vars are missing."},
             {"name": "Upstash Redis", "status": "ready" if settings.upstash_redis_url else "demo", "detail": "Celery broker is configured." if settings.upstash_redis_url else "Memory broker fallback is active."},
             {"name": "Supabase", "status": "ready" if settings.database_url else "demo", "detail": "SQLAlchemy persistence is configured." if settings.database_url else "Using the bundled demo seed."},
             {"name": "YouTube OAuth", "status": "ready" if settings.youtube_ready else "demo", "detail": "Google OAuth credentials are configured." if settings.youtube_ready else "OAuth env vars are missing."},
@@ -60,9 +60,9 @@ def settings_snapshot() -> dict:
             "youtubeScope": "openid email profile https://www.googleapis.com/auth/youtube.upload",
         },
         "storage": {
-            "r2Configured": settings.r2_ready,
-            "bucketName": settings.cloudflare_r2_bucket_name,
-            "tempRetentionRule": "Delete raw chunk after processing and delete final Short after successful YouTube upload.",
+            "driveConfigured": settings.google_drive_ready,
+            "folderId": settings.google_drive_folder_id,
+            "tempRetentionRule": "Delete raw source after processing and delete processed Short after successful YouTube upload.",
         },
         "processing": {
             "groqConfigured": bool(settings.groq_api_key),

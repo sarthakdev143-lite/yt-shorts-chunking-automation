@@ -53,11 +53,11 @@ export function getMockPlatformHealth(): PlatformHealth {
           : "Backend configured via NEXT_PUBLIC_API_BASE_URL.",
       },
       {
-        name: "Cloudflare R2",
-        status: process.env.CLOUDFLARE_R2_BUCKET_NAME ? "ready" : "demo",
-        detail: process.env.CLOUDFLARE_R2_BUCKET_NAME
-          ? `Temporary transit bucket: ${process.env.CLOUDFLARE_R2_BUCKET_NAME}`
-          : "Presigned upload flow is scaffolded; bucket env vars are missing.",
+        name: "Google Drive",
+        status: process.env.GOOGLE_DRIVE_FOLDER_ID ? "ready" : "demo",
+        detail: process.env.GOOGLE_DRIVE_FOLDER_ID
+          ? `Temporary transit folder: ${process.env.GOOGLE_DRIVE_FOLDER_ID}`
+          : "Google Drive storage is scaffolded; service-account env vars are missing.",
       },
       {
         name: "Upstash Redis",
@@ -92,13 +92,8 @@ export function getMockSettings(): SettingsSnapshot {
       youtubeScope: "openid email profile https://www.googleapis.com/auth/youtube.upload",
     },
     storage: {
-      r2Configured: Boolean(
-        process.env.CLOUDFLARE_R2_ACCESS_KEY &&
-          process.env.CLOUDFLARE_R2_SECRET_KEY &&
-          process.env.CLOUDFLARE_R2_BUCKET_NAME &&
-          process.env.CLOUDFLARE_R2_ENDPOINT,
-      ),
-      bucketName: process.env.CLOUDFLARE_R2_BUCKET_NAME ?? null,
+      driveConfigured: Boolean(process.env.GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE && process.env.GOOGLE_DRIVE_FOLDER_ID),
+      folderId: process.env.GOOGLE_DRIVE_FOLDER_ID ?? null,
       tempRetentionRule: "Delete raw chunk after processing, then delete processed Short after successful YouTube upload.",
     },
     processing: {

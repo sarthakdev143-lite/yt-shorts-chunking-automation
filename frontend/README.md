@@ -2,11 +2,11 @@
 
 Shortsmith is a full stack workflow for turning owned or licensed long-form video into YouTube Shorts.
 
-It is designed around free-tier constraints:
-- Direct upload to Cloudflare R2 with presigned URLs so Render never buffers the source file
+It is designed around practical low-cost constraints:
+- Backend-managed upload into Google Drive as temporary transit storage
 - Serial FFmpeg processing so chunking stays inside a small memory envelope
 - Groq Whisper transcription for subtitles
-- Temporary R2 storage only: raw chunks are deleted after processing, and final Shorts are deleted after successful YouTube upload
+- Temporary Google Drive storage only: raw sources are deleted after processing, and final Shorts are deleted after successful YouTube upload
 - Review and scheduling surfaces in a Next.js operator UI
 
 ## Stack
@@ -19,7 +19,7 @@ It is designed around free-tier constraints:
 | Queue | Celery + Redis / Upstash-compatible broker |
 | Processing | FFmpeg via subprocess |
 | Transcription | Groq audio transcription API |
-| Storage | Cloudflare R2 (S3-compatible) |
+| Storage | Google Drive API |
 | Database | SQLAlchemy against Supabase/Postgres-compatible storage |
 | Upload | YouTube Data API v3 scaffolding |
 
@@ -47,13 +47,13 @@ It is designed around free-tier constraints:
   - Duplicate-guard visibility
   - Upload queue states
 - Settings at `/settings`
-  - Env readiness surface for OAuth, R2, Groq, Redis, and data persistence
+  - Env readiness surface for OAuth, Google Drive, Groq, Redis, and data persistence
 - Health route at `/api/health`
 - NextAuth route handler at `/api/auth/[...nextauth]`
 
 ### Backend
 - FastAPI app in `backend/`
-- Upload endpoints for presigning and queue completion
+- Upload endpoints for direct file ingest and source URL ingest
 - Project and chunk endpoints
 - SSE project event stream endpoint
 - Celery worker entrypoint
@@ -87,7 +87,7 @@ The repo ships with a seeded demo mode so the UI works without external credenti
 - `NEXT_PUBLIC_DEMO_MODE=true`
 - `DEMO_MODE=true`
 - Uses `data/demo-projects.json`
-- Frontend upload flow simulates R2 progress
+- Frontend upload flow simulates Drive ingest progress
 - Backend processing path produces demo chunks if no live storage is configured
 
 ### Live mode
@@ -95,7 +95,7 @@ Set:
 - `NEXT_PUBLIC_DEMO_MODE=false`
 - `DEMO_MODE=false`
 - `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000` or your deployed backend URL
-- Valid R2, Groq, Redis, Google OAuth, and Postgres env vars
+- Valid Google Drive, Groq, Redis, Google OAuth, and Postgres env vars
 
 ## Environment variables
 
@@ -103,10 +103,8 @@ Copy `.env.example` to `.env` and fill in the values you actually use.
 
 Core variables:
 - `GROQ_API_KEY`
-- `CLOUDFLARE_R2_ACCESS_KEY`
-- `CLOUDFLARE_R2_SECRET_KEY`
-- `CLOUDFLARE_R2_BUCKET_NAME`
-- `CLOUDFLARE_R2_ENDPOINT`
+- `GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE`
+- `GOOGLE_DRIVE_FOLDER_ID`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `UPSTASH_REDIS_URL`
@@ -120,7 +118,6 @@ Additional practical variables for local execution:
 - `NEXT_PUBLIC_DEMO_MODE`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `CLOUDFLARE_R2_PUBLIC_BASE_URL`
 
 ## Local development
 
@@ -148,13 +145,13 @@ celery -A backend.workers.tasks worker --loglevel=info
 docker compose up --build
 ```
 
-The compose stack uses local Postgres and Redis primitives that are compatible with the Supabase/Postgres and Upstash/Redis integration points in the code.
+The compose stack uses local Postgres and Redis primitives and mounts a Google service-account JSON file for Drive API access.
 
 ## Backend endpoints
 
 ### Upload
-- `POST /api/upload/presign`
-- `POST /api/upload/complete`
+- `POST /api/upload/file`
+- `POST /api/upload/source-url`
 
 ### Projects
 - `GET /api/projects`
@@ -177,7 +174,7 @@ The compose stack uses local Postgres and Redis primitives that are compatible w
 
 The repository includes the service boundaries and orchestration for the production pipeline, but external providers still require real credentials and infrastructure:
 - Groq transcription calls the live API only when `GROQ_API_KEY` is present
-- R2 presigned uploads require S3-compatible credentials and bucket configuration
+- Google Drive storage requires a service-account JSON file and a folder shared with that service account
 - Celery fan-out uses Redis when `UPSTASH_REDIS_URL` is set; otherwise it falls back to an in-process memory broker for local/demo flows
 - SQLAlchemy persistence requires `DATABASE_URL`
 - YouTube upload scaffolding covers duplicate checks and the resumable upload path; worker-managed artifact handoff remains the intended place to complete channel publication in a fully live deployment

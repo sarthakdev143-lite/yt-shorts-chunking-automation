@@ -118,8 +118,8 @@ export type SettingsSnapshot = {
     youtubeScope: string;
   };
   storage: {
-    r2Configured: boolean;
-    bucketName: string | null;
+    driveConfigured: boolean;
+    folderId: string | null;
     tempRetentionRule: string;
   };
   processing: {

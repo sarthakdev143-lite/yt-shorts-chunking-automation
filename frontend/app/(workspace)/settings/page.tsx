@@ -44,9 +44,9 @@ export default async function SettingsPage() {
         <CardContent className="space-y-4">
           <div className="rounded-2xl border border-white/6 bg-black/12 p-4">
             <div className="flex items-center justify-between gap-3">
-              <p className="font-medium text-[color:var(--foreground)]">Cloudflare R2 bucket</p>
-              <Badge variant={settings.storage.r2Configured ? "success" : "warning"}>
-                {settings.storage.r2Configured ? settings.storage.bucketName ?? "configured" : "missing env"}
+              <p className="font-medium text-[color:var(--foreground)]">Google Drive folder</p>
+              <Badge variant={settings.storage.driveConfigured ? "success" : "warning"}>
+                {settings.storage.driveConfigured ? settings.storage.folderId ?? "configured" : "missing env"}
               </Badge>
             </div>
             <p className="mt-3 text-sm leading-6 text-[color:var(--muted-foreground)]">{settings.storage.tempRetentionRule}</p>

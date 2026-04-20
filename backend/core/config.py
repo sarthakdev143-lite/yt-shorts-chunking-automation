@@ -22,11 +22,8 @@ class Settings(BaseSettings):
     groq_api_key: str | None = None
     groq_transcription_model: str = "whisper-large-v3-turbo"
 
-    cloudflare_r2_access_key: str | None = None
-    cloudflare_r2_secret_key: str | None = None
-    cloudflare_r2_bucket_name: str | None = None
-    cloudflare_r2_endpoint: str | None = None
-    cloudflare_r2_public_base_url: str | None = None
+    google_drive_service_account_file: str | None = None
+    google_drive_folder_id: str | None = None
 
     supabase_url: str | None = None
     supabase_anon_key: str | None = None
@@ -55,15 +52,8 @@ class Settings(BaseSettings):
         return (self.root_path / self.data_seed_path).resolve()
 
     @property
-    def r2_ready(self) -> bool:
-        return all(
-            [
-                self.cloudflare_r2_access_key,
-                self.cloudflare_r2_secret_key,
-                self.cloudflare_r2_bucket_name,
-                self.cloudflare_r2_endpoint,
-            ]
-        )
+    def google_drive_ready(self) -> bool:
+        return bool(self.google_drive_service_account_file and self.google_drive_folder_id)
 
     @property
     def youtube_ready(self) -> bool:

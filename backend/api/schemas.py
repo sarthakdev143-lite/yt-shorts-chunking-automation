@@ -167,28 +167,8 @@ class SettingsResponse(BaseModel):
     data: dict[str, Any]
 
 
-class PresignUploadRequest(BaseModel):
-    filename: str
-    content_type: str = Field(alias="contentType")
-    project_name: str = Field(alias="projectName")
-    chunk_duration: int = Field(alias="chunkDuration")
-    scene_detection: bool = Field(alias="sceneDetection")
-    privacy: PrivacyStatus
-
-    model_config = {"populate_by_name": True}
-
-
-class PresignUploadResponse(BaseModel):
-    url: str
-    method: str
-    object_key: str = Field(alias="objectKey")
-    public_url: str | None = Field(default=None, alias="publicUrl")
-
-    model_config = {"populate_by_name": True}
-
-
-class CompleteUploadRequest(BaseModel):
-    object_key: str = Field(alias="objectKey")
+class SourceUrlIngestRequest(BaseModel):
+    source_url: str = Field(alias="sourceUrl")
     project_name: str = Field(alias="projectName")
     chunk_duration: int = Field(alias="chunkDuration")
     scene_detection: bool = Field(alias="sceneDetection")

@@ -29,7 +29,7 @@ def process_project_task(project_id: str, object_key: str) -> dict[str, str]:
     if not project:
         raise ValueError(f"Project {project_id} was not found")
 
-    if settings.demo_mode or not settings.r2_ready:
+    if settings.demo_mode or not settings.google_drive_ready:
         project.processing_stage = "Demo mode processing completed"
         project.upload_progress = 100
         project.status = ProjectStatus.READY

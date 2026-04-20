@@ -23,20 +23,18 @@ services:
   backend:
     image: python:3.12-slim
     working_dir: /app
-    command: sh -c "pip install -r backend/requirements.txt && uvicorn backend.main:app --host 0.0.0.0 --port 8000"
+    command: sh -c "apt-get update && apt-get install -y ffmpeg && pip install -r backend/requirements.txt && uvicorn backend.main:app --host 0.0.0.0 --port 8000"
     volumes:
       - ./:/app
+      - ${GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE_HOST:-./secrets/google-drive-service-account.json}:/run/secrets/google-drive-service-account.json:ro
     ports:
       - "8000:8000"
     environment:
       DEMO_MODE: ${DEMO_MODE:-false}
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@postgres:5432/shortsmith}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
-      CLOUDFLARE_R2_ACCESS_KEY: ${CLOUDFLARE_R2_ACCESS_KEY:-}
-      CLOUDFLARE_R2_SECRET_KEY: ${CLOUDFLARE_R2_SECRET_KEY:-}
-      CLOUDFLARE_R2_BUCKET_NAME: ${CLOUDFLARE_R2_BUCKET_NAME:-}
-      CLOUDFLARE_R2_ENDPOINT: ${CLOUDFLARE_R2_ENDPOINT:-}
-      CLOUDFLARE_R2_PUBLIC_BASE_URL: ${CLOUDFLARE_R2_PUBLIC_BASE_URL:-}
+      GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE: ${GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE:-/run/secrets/google-drive-service-account.json}
+      GOOGLE_DRIVE_FOLDER_ID: ${GOOGLE_DRIVE_FOLDER_ID:-}
       SUPABASE_URL: ${SUPABASE_URL:-}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
       UPSTASH_REDIS_URL: ${UPSTASH_REDIS_URL:-redis://redis:6379/0}
@@ -50,18 +48,16 @@ services:
   worker:
     image: python:3.12-slim
     working_dir: /app
-    command: sh -c "pip install -r backend/requirements.txt && celery -A backend.workers.tasks worker --loglevel=info"
+    command: sh -c "apt-get update && apt-get install -y ffmpeg && pip install -r backend/requirements.txt && celery -A backend.workers.tasks worker --loglevel=info"
     volumes:
       - ./:/app
+      - ${GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE_HOST:-./secrets/google-drive-service-account.json}:/run/secrets/google-drive-service-account.json:ro
     environment:
       DEMO_MODE: ${DEMO_MODE:-false}
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@postgres:5432/shortsmith}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
-      CLOUDFLARE_R2_ACCESS_KEY: ${CLOUDFLARE_R2_ACCESS_KEY:-}
-      CLOUDFLARE_R2_SECRET_KEY: ${CLOUDFLARE_R2_SECRET_KEY:-}
-      CLOUDFLARE_R2_BUCKET_NAME: ${CLOUDFLARE_R2_BUCKET_NAME:-}
-      CLOUDFLARE_R2_ENDPOINT: ${CLOUDFLARE_R2_ENDPOINT:-}
-      CLOUDFLARE_R2_PUBLIC_BASE_URL: ${CLOUDFLARE_R2_PUBLIC_BASE_URL:-}
+      GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE: ${GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE:-/run/secrets/google-drive-service-account.json}
+      GOOGLE_DRIVE_FOLDER_ID: ${GOOGLE_DRIVE_FOLDER_ID:-}
       SUPABASE_URL: ${SUPABASE_URL:-}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
       UPSTASH_REDIS_URL: ${UPSTASH_REDIS_URL:-redis://redis:6379/0}
