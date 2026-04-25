@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
 
-from backend.api.schemas import YouTubeDuplicateCheckRequest, YouTubeUploadRequest
+from backend.api.schemas import ChunkStatus, YouTubeDuplicateCheckRequest, YouTubeUploadRequest
 from backend.core.config import get_settings
 from backend.services.repository import get_repository
 from backend.services.uploader import YouTubeUploader
@@ -29,7 +29,7 @@ def upload_chunk(request: YouTubeUploadRequest) -> dict:
     if chunk is None:
         raise HTTPException(status_code=404, detail="Chunk not found")
     if settings.demo_mode:
-        chunk.status = "uploaded"
+        chunk.status = ChunkStatus.UPLOADED
         chunk.youtube_video_id = f"yt_{chunk.id}"
         chunk.upload_attempts += 1
         repository.save_project(project)

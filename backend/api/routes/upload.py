@@ -10,7 +10,7 @@ from uuid import uuid4
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
-from backend.api.schemas import Project, ProjectStatus, SourceUrlIngestRequest
+from backend.api.schemas import PrivacyStatus, Project, ProjectStatus, SourceUrlIngestRequest
 from backend.services.events import get_event_broker
 from backend.services.downloader import SourceDownloader
 from backend.services.repository import get_repository
@@ -19,11 +19,38 @@ from backend.workers.tasks import enqueue_processing
 from backend.core.config import get_settings
 
 router = APIRouter(prefix="/upload", tags=["upload"])
+VIDEO_CONTENT_TYPES = {"video/mp4", "video/quicktime", "video/x-matroska", "video/webm", "video/x-msvideo"}
+UPLOAD_CHUNK_SIZE = 1024 * 1024
 
 
 def _slugify(value: str) -> str:
     slug = re.sub(r"[^a-zA-Z0-9]+", "-", value.strip().lower()).strip("-")
     return slug or uuid4().hex[:10]
+
+
+def _validated_upload_content_type(file: UploadFile) -> str:
+    content_type = file.content_type or mimetypes.guess_type(file.filename or "")[0] or "application/octet-stream"
+    if content_type not in VIDEO_CONTENT_TYPES:
+        raise HTTPException(status_code=415, detail="Only common video uploads are supported.")
+    return content_type
+
+
+async def _persist_upload_to_path(file: UploadFile, destination: Path, max_bytes: int) -> str:
+    content_type = _validated_upload_content_type(file)
+
+    total_bytes = 0
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("wb") as handle:
+        while chunk := await file.read(UPLOAD_CHUNK_SIZE):
+            total_bytes += len(chunk)
+            if total_bytes > max_bytes:
+                raise HTTPException(status_code=413, detail=f"Upload exceeds the {max_bytes // (1024 * 1024)} MB limit.")
+            handle.write(chunk)
+
+    await file.close()
+    if total_bytes == 0:
+        raise HTTPException(status_code=400, detail="Uploaded file was empty.")
+    return content_type
 
 
 async def _queue_project(
@@ -32,7 +59,7 @@ async def _queue_project(
     project_name: str,
     chunk_duration: int,
     scene_detection: bool,
-    privacy,
+    privacy: PrivacyStatus,
     source_video_url: str,
 ) -> Project:
     repository = get_repository()
@@ -71,11 +98,14 @@ async def ingest_uploaded_file(
     project_name: str = Form(..., alias="projectName"),
     chunk_duration: int = Form(..., alias="chunkDuration"),
     scene_detection: bool = Form(..., alias="sceneDetection"),
-    privacy: str = Form(...),
+    privacy: PrivacyStatus = Form(...),
 ) -> Project:
     settings = get_settings()
     storage = StorageService(settings)
 
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Uploaded file must include a filename.")
+    _validated_upload_content_type(file)
     object_key = f"uploads/{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}-{_slugify(project_name)}-{file.filename}"
     if settings.demo_mode:
         return await _queue_project(
@@ -92,9 +122,7 @@ async def ingest_uploaded_file(
 
     with tempfile.TemporaryDirectory(prefix="shortsmith-upload-") as temp_dir:
         temp_path = Path(temp_dir) / (file.filename or "source.mp4")
-        temp_path.parent.mkdir(parents=True, exist_ok=True)
-        temp_path.write_bytes(await file.read())
-        content_type = file.content_type or mimetypes.guess_type(temp_path.name)[0] or "video/mp4"
+        content_type = await _persist_upload_to_path(file, temp_path, settings.max_upload_size_bytes)
         drive_file_id = storage.upload_file(temp_path, object_key, content_type)
 
     return await _queue_project(
@@ -156,5 +184,5 @@ async def ingest_source_url(request: SourceUrlIngestRequest) -> Project:
         chunk_duration=request.chunk_duration,
         scene_detection=request.scene_detection,
         privacy=request.privacy,
-        source_video_url=request.source_url if settings.demo_mode else storage.public_url_for(drive_file_id),
+        source_video_url=storage.public_url_for(drive_file_id),
     )

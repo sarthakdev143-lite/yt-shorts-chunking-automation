@@ -104,6 +104,7 @@ Copy `.env.example` to `.env` and fill in the values you actually use.
 Core variables:
 - `GROQ_API_KEY`
 - `GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE`
+- `GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON`
 - `GOOGLE_DRIVE_FOLDER_ID`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
@@ -118,6 +119,11 @@ Additional practical variables for local execution:
 - `NEXT_PUBLIC_DEMO_MODE`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `BACKEND_CORS_ORIGINS`
+- `TRUSTED_HOSTS`
+- `BACKEND_URL`
+- `LOG_LEVEL`
+- `MAX_UPLOAD_SIZE_MB`
 
 ## Local development
 
@@ -174,10 +180,36 @@ The compose stack uses local Postgres and Redis primitives and mounts a Google s
 
 The repository includes the service boundaries and orchestration for the production pipeline, but external providers still require real credentials and infrastructure:
 - Groq transcription calls the live API only when `GROQ_API_KEY` is present
-- Google Drive storage requires a service-account JSON file and a folder shared with that service account
+- Google Drive storage requires either `GOOGLE_DRIVE_SERVICE_ACCOUNT_FILE` or `GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON`, plus a folder shared with that service account
 - Celery fan-out uses Redis when `UPSTASH_REDIS_URL` is set; otherwise it falls back to an in-process memory broker for local/demo flows
 - SQLAlchemy persistence requires `DATABASE_URL`
 - YouTube upload scaffolding covers duplicate checks and the resumable upload path; worker-managed artifact handoff remains the intended place to complete channel publication in a fully live deployment
+
+## Render deploy
+
+This repo now includes a root-level `render.yaml` Blueprint for:
+- `shortsmith-web` as the Next.js frontend
+- `shortsmith-api` as the FastAPI backend
+- `shortsmith-worker` as the Celery worker
+- `shortsmith-db` as Postgres
+- `shortsmith-redis` as Redis
+
+The backend and worker run from Docker so FFmpeg and `yt-dlp` are present in production.
+
+Before applying the Blueprint in Render, fill these secret env vars in the Dashboard:
+- `GROQ_API_KEY`
+- `GOOGLE_DRIVE_FOLDER_ID`
+- `GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `NEXTAUTH_SECRET`
+
+If your Render service names differ from the defaults in `render.yaml`, update:
+- `NEXT_PUBLIC_API_BASE_URL`
+- `NEXTAUTH_URL`
+- `BACKEND_URL`
+- `BACKEND_CORS_ORIGINS`
+- `TRUSTED_HOSTS`
 
 ## Verification
 
@@ -187,6 +219,14 @@ npm run lint
 npm run build
 python -m compileall backend
 ```
+
+Operational checks for live deploys:
+```bash
+curl http://localhost:8000/health
+curl -i http://localhost:8000/ready
+```
+
+`/ready` returns HTTP 503 when live mode is enabled but required production dependencies are not configured.
 
 ## Compliance
 

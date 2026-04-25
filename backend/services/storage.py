@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import io
+import json
 import mimetypes
 from pathlib import Path
 
@@ -26,7 +26,16 @@ class StorageService:
         if not self.ready:
             raise RuntimeError("Google Drive storage is not configured.")
         if self._service is None:
-            credentials = Credentials.from_service_account_file(self.settings.google_drive_service_account_file, scopes=DRIVE_SCOPES)
+            if self.settings.google_drive_service_account_json:
+                credentials = Credentials.from_service_account_info(
+                    json.loads(self.settings.google_drive_service_account_json),
+                    scopes=DRIVE_SCOPES,
+                )
+            else:
+                credentials = Credentials.from_service_account_file(
+                    self.settings.google_drive_service_account_file,
+                    scopes=DRIVE_SCOPES,
+                )
             self._service = build("drive", "v3", credentials=credentials, cache_discovery=False)
         return self._service
 
