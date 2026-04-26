@@ -109,7 +109,15 @@ class SourceDownloader:
         asin = f"amzn1.dv.gti.{content_id}"
 
         with self._build_amazon_client(cookies) as client:
-            bootstrap_response = client.get("https://www.amazon.in/minitv")
+            # Retry the bootstrap page — Amazon miniTV occasionally returns 503
+            # for a few seconds before recovering.
+            for attempt in range(3):
+                bootstrap_response = client.get("https://www.amazon.in/minitv")
+                if bootstrap_response.status_code != 503:
+                    break
+                if attempt < 2:
+                    import time
+                    time.sleep(2 ** attempt)
             bootstrap_response.raise_for_status()
 
             for attempt in range(3):
