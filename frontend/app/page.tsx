@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDashboardSnapshot, getPlatformHealth } from "@/lib/api";
-import { createClient as createSupabaseServerClient } from "@/utils/supabase/server";
+import { createClient as createSupabaseServerClient, hasSupabaseConfig } from "@/utils/supabase/server";
 import { cn } from "@/lib/utils";
 
 const pillars = [
@@ -33,23 +33,25 @@ const pillars = [
 ];
 
 export default async function HomePage() {
-  const cookieStore = await cookies();
-  const supabase = createSupabaseServerClient(cookieStore);
-  const [overview, health, todosResult] = await Promise.all([
-    getDashboardSnapshot(),
-    getPlatformHealth(),
-    supabase.from("todos").select("id, name").limit(5),
-  ]);
-  const todos = todosResult.error ? [] : todosResult.data ?? [];
+  const supabaseEnabled = hasSupabaseConfig();
+  const todosPromise = supabaseEnabled
+    ? (async () => {
+        const cookieStore = await cookies();
+        const supabase = createSupabaseServerClient(cookieStore);
+        const result = await supabase.from("todos").select("id, name").limit(5);
+        return result.error ? [] : result.data ?? [];
+      })()
+    : Promise.resolve([]);
+  const [overview, health, todos] = await Promise.all([getDashboardSnapshot(), getPlatformHealth(), todosPromise]);
 
   return (
     <div className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(68,190,163,0.22),transparent_28%),radial-gradient(circle_at_85%_12%,rgba(242,168,72,0.14),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0))]" />
       <main className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-8 lg:py-10">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[color:var(--line)] pb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-(--line) pb-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[color:var(--accent)]">Shortsmith</p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-(--accent)">Shortsmith</p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               Production-minded Shorts chunking without paid infra.
             </h1>
           </div>
