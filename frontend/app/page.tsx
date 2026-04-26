@@ -72,10 +72,10 @@ export default async function HomePage() {
               {health.mode === "demo" ? "Seeded demo mode" : "Live backend connected"}
             </Badge>
             <div className="space-y-5">
-              <h2 className="max-w-4xl text-5xl font-semibold leading-tight tracking-tight text-[color:var(--foreground)] sm:text-6xl">
+              <h2 className="max-w-4xl text-5xl font-semibold leading-tight tracking-tight text-foreground sm:text-6xl">
                 Chunk long-form video, review every Short, then schedule YouTube uploads with cleanup built in.
               </h2>
-              <p className="max-w-2xl text-lg leading-8 text-[color:var(--muted-foreground)]">
+              <p className="max-w-2xl text-lg leading-8 text-(--muted-foreground)">
                 Next.js drives the operator UI, FastAPI and Celery process the footage, Groq handles transcription,
                 and Google Drive acts as a temporary transit layer so the workflow stays operational without dedicated object storage.
               </p>
@@ -84,19 +84,19 @@ export default async function HomePage() {
             <div className="grid gap-4 sm:grid-cols-3">
               <Card>
                 <CardHeader>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">Projects</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--muted-foreground)">Projects</p>
                   <CardTitle className="mt-3 text-4xl">{overview.summary.totalProjects}</CardTitle>
                 </CardHeader>
               </Card>
               <Card>
                 <CardHeader>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">Approved chunks</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--muted-foreground)">Approved chunks</p>
                   <CardTitle className="mt-3 text-4xl">{overview.summary.approvedChunks}</CardTitle>
                 </CardHeader>
               </Card>
               <Card>
                 <CardHeader>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">Uploaded</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--muted-foreground)">Uploaded</p>
                   <CardTitle className="mt-3 text-4xl">{overview.summary.uploadedChunks}</CardTitle>
                 </CardHeader>
               </Card>
@@ -105,13 +105,13 @@ export default async function HomePage() {
             {todos.length > 0 ? (
               <Card>
                 <CardHeader>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--muted-foreground)">
                     Supabase todos
                   </p>
                   <CardTitle className="mt-3 text-2xl">Live sample query</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2 text-sm text-[color:var(--muted-foreground)]">
+                  <ul className="space-y-2 text-sm text-(--muted-foreground)">
                     {todos.map((todo) => (
                       <li key={todo.id}>{todo.name}</li>
                     ))}
@@ -127,13 +127,13 @@ export default async function HomePage() {
               return (
                 <Card key={pillar.title}>
                   <CardHeader>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[color:var(--accent)]/20 bg-[color:var(--accent)]/10">
-                      <Icon className="h-5 w-5 text-[color:var(--accent)]" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-(--accent)/20 bg-(--accent)/10">
+                      <Icon className="h-5 w-5 text-(--accent)" />
                     </div>
                     <CardTitle className="mt-4 text-2xl">{pillar.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm leading-6 text-[color:var(--muted-foreground)]">{pillar.body}</p>
+                    <p className="text-sm leading-6 text-(--muted-foreground)">{pillar.body}</p>
                   </CardContent>
                 </Card>
               );
