@@ -47,9 +47,9 @@ class Settings(BaseSettings):
     ffmpeg_binary: str = "ffmpeg"
     ffprobe_binary: str = "ffprobe"
 
-    # Amazon miniTV cookies — Netscape/Mozilla format cookies.txt content.
-    # Export from your browser after logging into amazon.in, then paste the
-    # full file content as this env var value on Render.
+    # Optional Amazon miniTV cookies in Netscape/Mozilla cookies.txt format.
+    # The downloader now prefers a guest session and uses this only as a
+    # fallback when the guest flow is rejected.
     amazon_minitv_cookies: str | None = Field(
         default=None,
         validation_alias=AliasChoices("AMAZON_MINITV_COOKIES", "amazon_minitv_cookies"),

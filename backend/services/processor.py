@@ -16,7 +16,18 @@ class VideoProcessor:
             raise RuntimeError("ffmpeg binary was not found on PATH.")
 
     def run(self, *args: str) -> None:
-        subprocess.run([self.settings.ffmpeg_binary, *args], check=True, capture_output=True)
+        try:
+            subprocess.run(
+                [self.settings.ffmpeg_binary, *args],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except subprocess.CalledProcessError as exc:
+            stderr = (exc.stderr or "").strip()
+            stdout = (exc.stdout or "").strip()
+            detail = stderr or stdout or "ffmpeg exited with a non-zero status."
+            raise RuntimeError(f"ffmpeg failed while processing video.\n\nRaw error:\n{detail}") from exc
 
     def split_fixed_chunk(self, source: Path, destination: Path, start_seconds: float, duration_seconds: int) -> Path:
         self.ensure_ffmpeg()
