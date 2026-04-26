@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     google_drive_service_account_json: str | None = None
     google_drive_folder_id: str | None = None
 
+    # OAuth2 user credentials (preferred over service account for personal Drive)
+    google_drive_client_id: str | None = None
+    google_drive_client_secret: str | None = None
+    google_drive_refresh_token: str | None = None
+
     supabase_url: str | None = None
     supabase_anon_key: str | None = None
     upstash_redis_url: str | None = None
@@ -84,8 +89,23 @@ class Settings(BaseSettings):
         return (self.root_path / self.data_seed_path).resolve()
 
     @property
+    def google_drive_oauth2_ready(self) -> bool:
+        """True when OAuth2 user-credential flow is fully configured."""
+        return bool(
+            self.google_drive_client_id
+            and self.google_drive_client_secret
+            and self.google_drive_refresh_token
+            and self.google_drive_folder_id
+        )
+
+    @property
     def google_drive_ready(self) -> bool:
-        return bool((self.google_drive_service_account_file or self.google_drive_service_account_json) and self.google_drive_folder_id)
+        """True when *any* Drive auth method is fully configured."""
+        service_account_ready = bool(
+            (self.google_drive_service_account_file or self.google_drive_service_account_json)
+            and self.google_drive_folder_id
+        )
+        return service_account_ready or self.google_drive_oauth2_ready
 
     @property
     def youtube_ready(self) -> bool:
@@ -107,7 +127,7 @@ class Settings(BaseSettings):
         if not self.database_url:
             issues.append("DATABASE_URL is missing.")
         if not self.google_drive_ready:
-            issues.append("Google Drive service-account configuration is incomplete.")
+            issues.append("Google Drive configuration is incomplete (need OAuth2 refresh token OR service-account credentials + folder ID).")
         if not self.groq_api_key:
             issues.append("GROQ_API_KEY is missing.")
         if not self.youtube_ready:

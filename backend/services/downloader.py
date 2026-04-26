@@ -104,6 +104,7 @@ class SourceDownloader:
         return client
 
     def _fetch_playback_payload(self, source_url: str, cookies: dict[str, str] | None = None) -> dict:
+        import time
         content_id = self._extract_content_id(source_url)
         asin = f"amzn1.dv.gti.{content_id}"
 
@@ -111,11 +112,17 @@ class SourceDownloader:
             bootstrap_response = client.get("https://www.amazon.in/minitv")
             bootstrap_response.raise_for_status()
 
-            response = client.get(
-                AMAZON_MINITV_PAGE_API,
-                params={"contentId": asin},
-                headers=AMAZON_MINITV_PAGE_HEADERS,
-            )
+            for attempt in range(3):
+                response = client.get(
+                    AMAZON_MINITV_PAGE_API,
+                    params={"contentId": asin},
+                    headers=AMAZON_MINITV_PAGE_HEADERS,
+                )
+                if response.status_code != 503:
+                    break
+                if attempt < 2:
+                    time.sleep(2 ** attempt)
+
             response.raise_for_status()
             payload = response.json()
 
