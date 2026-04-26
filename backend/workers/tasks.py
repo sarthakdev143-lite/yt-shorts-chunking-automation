@@ -26,7 +26,9 @@ from backend.services.transcriber import GroqTranscriber
 settings = get_settings()
 
 # Render's Redis connectionString uses redis:// but requires TLS (rediss://).
-# The CELERY_BROKER_USE_SSL env var signals we should upgrade the scheme.
+# Handle two cases:
+#   1. URL comes in as redis:// → upgrade scheme to rediss://
+#   2. URL already comes in as rediss:// → keep scheme, but still apply SSL opts
 _broker_url = settings.upstash_redis_url or "memory://"
 _use_ssl = False
 if (
@@ -35,6 +37,9 @@ if (
     and "127.0.0.1" not in _broker_url
 ):
     _broker_url = _broker_url.replace("redis://", "rediss://", 1)
+    _use_ssl = True
+elif _broker_url.startswith("rediss://"):
+    # URL already uses the secure scheme — SSL opts must still be applied.
     _use_ssl = True
 
 celery_app = Celery(
