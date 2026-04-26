@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { ArrowRight, Blocks, CloudUpload, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDashboardSnapshot, getPlatformHealth } from "@/lib/api";
+import { createClient as createSupabaseServerClient } from "@/utils/supabase/server";
 import { cn } from "@/lib/utils";
 
 const pillars = [
@@ -31,7 +33,14 @@ const pillars = [
 ];
 
 export default async function HomePage() {
-  const [overview, health] = await Promise.all([getDashboardSnapshot(), getPlatformHealth()]);
+  const cookieStore = await cookies();
+  const supabase = createSupabaseServerClient(cookieStore);
+  const [overview, health, todosResult] = await Promise.all([
+    getDashboardSnapshot(),
+    getPlatformHealth(),
+    supabase.from("todos").select("id, name").limit(5),
+  ]);
+  const todos = todosResult.error ? [] : todosResult.data ?? [];
 
   return (
     <div className="relative overflow-hidden">
@@ -90,6 +99,24 @@ export default async function HomePage() {
                 </CardHeader>
               </Card>
             </div>
+
+            {todos.length > 0 ? (
+              <Card>
+                <CardHeader>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">
+                    Supabase todos
+                  </p>
+                  <CardTitle className="mt-3 text-2xl">Live sample query</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-[color:var(--muted-foreground)]">
+                    {todos.map((todo) => (
+                      <li key={todo.id}>{todo.name}</li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ) : null}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">

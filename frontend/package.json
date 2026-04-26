@@ -13,6 +13,7 @@
     "backend:beat": "..\\backend\\.venv\\Scripts\\python.exe -m celery --workdir .. -A backend.workers.tasks beat --loglevel=info"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.57.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

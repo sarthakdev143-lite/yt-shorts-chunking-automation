@@ -6,7 +6,7 @@ services:
     rootDir: frontend
     buildCommand: npm ci && npm run build
     startCommand: npm run start -- --hostname 0.0.0.0 --port $PORT
-    autoDeploy: true
+    autoDeployTrigger: commit
     envVars:
       - key: NODE_ENV
         value: production
@@ -14,6 +14,10 @@ services:
         value: "false"
       - key: NEXT_PUBLIC_API_BASE_URL
         value: https://shortsmith-api.onrender.com
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://apwkssfjmpbwcxadxcbf.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+        sync: false
       - key: NEXTAUTH_URL
         value: https://shortsmith-web.onrender.com
       - key: GOOGLE_CLIENT_ID
@@ -29,9 +33,11 @@ services:
     plan: free
     dockerfilePath: ./backend/Dockerfile.api
     dockerContext: .
-    autoDeploy: true
+    autoDeployTrigger: commit
     healthCheckPath: /ready
     envVars:
+      - key: CELERY_BROKER_USE_SSL
+        value: "true"
       - key: DEMO_MODE
         value: "false"
       - key: ENVIRONMENT
@@ -51,7 +57,8 @@ services:
           name: shortsmith-db
           property: connectionString
       - key: UPSTASH_REDIS_URL
-        fromDatabase:
+        fromService:
+          type: keyvalue
           name: shortsmith-redis
           property: connectionString
       - key: GROQ_API_KEY
@@ -70,11 +77,13 @@ services:
   - type: worker
     name: shortsmith-worker
     runtime: docker
-    plan: free
+    plan: starter
     dockerfilePath: ./backend/Dockerfile.worker
     dockerContext: .
-    autoDeploy: true
+    autoDeployTrigger: commit
     envVars:
+      - key: CELERY_BROKER_USE_SSL
+        value: "true"
       - key: DEMO_MODE
         value: "false"
       - key: ENVIRONMENT
@@ -88,7 +97,8 @@ services:
           name: shortsmith-db
           property: connectionString
       - key: UPSTASH_REDIS_URL
-        fromDatabase:
+        fromService:
+          type: keyvalue
           name: shortsmith-redis
           property: connectionString
       - key: GROQ_API_KEY
@@ -104,11 +114,14 @@ services:
       - key: NEXTAUTH_SECRET
         sync: false
 
+  - type: keyvalue
+    name: shortsmith-redis
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
+
 databases:
   - name: shortsmith-db
     databaseName: shortsmith
     user: shortsmith
     plan: free
-  - name: shortsmith-redis
-    plan: free
-    maxmemoryPolicy: allkeys-lru
