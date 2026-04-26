@@ -47,6 +47,14 @@ class Settings(BaseSettings):
     ffmpeg_binary: str = "ffmpeg"
     ffprobe_binary: str = "ffprobe"
 
+    # Amazon miniTV cookies — Netscape/Mozilla format cookies.txt content.
+    # Export from your browser after logging into amazon.in, then paste the
+    # full file content as this env var value on Render.
+    amazon_minitv_cookies: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("AMAZON_MINITV_COOKIES", "amazon_minitv_cookies"),
+    )
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def parse_origins(cls, value: Any) -> Any:
@@ -86,6 +94,10 @@ class Settings(BaseSettings):
     @property
     def max_upload_size_bytes(self) -> int:
         return self.max_upload_size_mb * 1024 * 1024
+
+    @property
+    def amazon_minitv_ready(self) -> bool:
+        return bool(self.amazon_minitv_cookies)
 
     @property
     def readiness_issues(self) -> list[str]:
