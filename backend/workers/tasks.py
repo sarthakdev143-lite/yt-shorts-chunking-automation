@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import ssl 
 import subprocess
 import tempfile
 from datetime import datetime, timezone
@@ -50,7 +51,7 @@ celery_app = Celery(
 celery_app.conf.task_default_queue = "shortsmith-processing"
 
 if _use_ssl:
-    _ssl_opts = {"ssl_cert_reqs": "CERT_NONE"}
+    _ssl_opts = {"ssl_cert_reqs": ssl.CERT_NONE}
     celery_app.conf.broker_use_ssl = _ssl_opts
     celery_app.conf.redis_backend_use_ssl = _ssl_opts
 
